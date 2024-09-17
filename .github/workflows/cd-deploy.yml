@@ -103,5 +103,12 @@ jobs:
         run: |-
           echo "Created release ${{ steps.release.outputs.name }} "
           echo "Release link ${{ steps.release.outputs.link }} "
-          RELEASE_URL="https://console.cloud.google.com/deploy/delivery-pipelines/asia-northeast1/${{ secrets.APP_LANGCHAIN }}/releases/${{ env.RELEASE_NAME }}?project=${{ secrets.PROJECT_ID }}"
-          echo "Release link: $RELEASE_URL"
+          # Run gcloud command to list services and capture the URL for the staging service
+          SERVICE_URL=$(gcloud run services list --region=asia-northeast1 --platform=managed --format="value(URL)" --filter="SERVICE:langchain-stg")
+          
+          # Display the URL of the deployed service
+          if [ -n "$SERVICE_URL" ]; then
+            echo "Staging service URL: $SERVICE_URL"
+          else
+            echo "Service URL not found."
+          fi
