@@ -1,4 +1,4 @@
-name: Set Branch Protection Rules
+name: Sync Branch Protection Rules
 
 on:
   push:

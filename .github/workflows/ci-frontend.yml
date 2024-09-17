@@ -1,4 +1,4 @@
-name: Frontend CI
+name: CI Frontend
 
 on: [pull_request]
 
@@ -13,6 +13,10 @@ jobs:
       NODE_18_VERSION: 18.18.0
       NODE_20_VERSION: 20.12.2
     steps:
+      - name: Check and Set Target Directory
+        uses: ./.github/actions/check_directory.yml
+        with:
+          directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
 
   CreateCache:

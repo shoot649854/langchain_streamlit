@@ -1,4 +1,4 @@
-name: Backend CI
+name: CI Backend
 
 on:
   pull_request:
@@ -24,6 +24,10 @@ jobs:
       PASSING_UNIT_TEST_PYTHON_VERSIONS_BADGE_NAME: passing_unit_test_python_versions
       PASSING_UNIT_TEST_PYTHON_VERSIONS_BADGE_LABEL: 'passing unit tests Python versions'
     steps:
+      - name: Check and Set Target Directory
+        uses: ./.github/actions/check_directory.yml
+        with:
+          directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
 
   CreateCache:

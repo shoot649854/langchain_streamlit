@@ -1,4 +1,4 @@
-name: Google Cloud Deploy
+name: CD Google Cloud Deploy
 
 on:
   push:
