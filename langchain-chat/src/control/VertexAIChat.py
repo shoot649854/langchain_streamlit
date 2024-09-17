@@ -13,6 +13,11 @@ from langchain_google_vertexai import ChatVertexAI
 from src.control.Markdown import read_markdown
 
 # from functools import lru_cache
+PROJECT_ID = os.getenv("PROJECT_ID")
+LOCATION = os.getenv("LOCATION")
+STAGING_BUCKET = os.getenv("STAGING_BUCKET")
+LOCATION_ID = os.getenv("LOCATION_ID")
+DATA_STORE_ID = os.getenv("DATA_STORE_ID")
 
 # Set up basic logging configuration
 dotenv.load_dotenv()
@@ -20,9 +25,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 vertexai.init(
-    project=os.getenv("PROJECT_ID"),
-    location=os.getenv("LOCATION"),
-    staging_bucket=os.getenv("STAGING_BUCKET"),
+    project=PROJECT_ID,
+    location=LOCATION,
+    staging_bucket=STAGING_BUCKET,
 )
 
 # https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference
@@ -46,9 +51,9 @@ class VertexAIChat:
         filter_condition = None
 
         retriever = VertexAISearchRetriever(
-            project_id=os.getenv("PROJECT_ID"),
-            data_store_id=os.getenv("DATA_STORE_ID"),
-            location_id=os.getenv("LOCATION_ID"),
+            project_id=PROJECT_ID,
+            data_store_id=DATA_STORE_ID,
+            location_id=LOCATION_ID,
             engine_data_type=0,
             max_documents=3,
             filter=filter_condition,
@@ -87,11 +92,11 @@ class VertexAIChat:
         )
 
     def get_response(self, messages) -> str:
-        chat_model = ChatVertexAI(project=os.getenv("PROJECT_ID"), model=MODEL_NAME)
+        chat_model = ChatVertexAI(project=PROJECT_ID, model=MODEL_NAME)
         return chat_model.predict_messages(messages)
 
     def get_RAG_response(self, messages, response_search_immigration: str) -> str:
-        chat_model = ChatVertexAI(project=os.getenv("PROJECT_ID"), model=MODEL_NAME)
+        chat_model = ChatVertexAI(project=PROJECT_ID, model=MODEL_NAME)
         messages.append(AIMessage(response_search_immigration))
         return chat_model.predict_messages(messages)
 
