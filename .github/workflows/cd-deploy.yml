@@ -17,6 +17,15 @@ jobs:
       PYTHON_312_VERSION: 3.12.0
     steps:
       - run: echo 'Setting constants.'
+      - name: 'Set environment variables from GitHub Secrets'
+        run: |
+          echo "PROJECT_ID=${{ secrets.PROJECT_ID }}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=${{ secrets.IMAGE_NAME }}" >> $GITHUB_ENV
+          echo "REGION=${{ secrets.REGION }}" >> $GITHUB_ENV
+          echo "LOCATION=${{ secrets.LOCATION }}" >> $GITHUB_ENV
+          echo "STAGING_BUCKET=${{ secrets.STAGING_BUCKET }}" >> $GITHUB_ENV
+          echo "DATA_STORE_ID=${{ secrets.DATA_STORE_ID }}" >> $GITHUB_ENV
+          echo "LOCATION_ID=${{ secrets.LOCATION_ID }}" >> $GITHUB_ENV
 
   # https://github.com/google-github-actions/example-workflows/tree/main/workflows/create-cloud-deploy-release
   # App変更: secrets.App, .github/google_cloud/skaffold.template.yaml, .github/google_cloud/clouddeploy.template.yaml
