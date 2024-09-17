@@ -13,10 +13,12 @@ jobs:
       NODE_18_VERSION: 18.18.0
       NODE_20_VERSION: 20.12.2
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Check and Set Target Directory
         uses: ./.github/actions/check_directory
         with:
-          directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
+          directory: ${{ steps.SetGlobalConstants.outputs.FIRST_TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
 
   CreateCache:
