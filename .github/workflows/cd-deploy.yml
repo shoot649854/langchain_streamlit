@@ -1,0 +1,107 @@
+name: Google Cloud Deploy
+
+on:
+  push:
+    branches: [dev/main, main]
+
+jobs:
+  SetGlobalConstants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      TARGET_DIRECTORY: 'langchain-chat'
+      PYTHON_38_VERSION: 3.8.17
+      PYTHON_39_VERSION: 3.9.12
+      PYTHON_310_VERSION: 3.10.4
+      PYTHON_311_VERSION: 3.11.1
+      PYTHON_312_VERSION: 3.12.0
+    steps:
+      - run: echo 'Setting constants.'
+
+  # https://github.com/google-github-actions/example-workflows/tree/main/workflows/create-cloud-deploy-release
+  # App変更: secrets.App, .github/google_cloud/skaffold.template.yaml, .github/google_cloud/clouddeploy.template.yaml
+  RunGoogleCloudDeploy:
+    needs: [SetGlobalConstants]
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Google Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: 'Docker auth'
+        run: |-
+          gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: 'Build and push container'
+        run: |-
+          docker build -t "asia-northeast1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.APP_LANGCHAIN }}/${{ secrets.APP_LANGCHAIN }}:${{ github.sha }}" .
+          docker push "asia-northeast1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.APP_LANGCHAIN }}/${{ secrets.APP_LANGCHAIN }}:${{ github.sha }}"
+        working-directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
+
+      - name: 'Render template config manifests'
+        run: |-
+          export PROJECT_ID="${{ secrets.PROJECT_ID }}"
+          export REGION="asia-northeast1"
+          export APP="${{ secrets.APP_LANGCHAIN }}"
+
+          # Write these variables to the GitHub Actions environment file so they persist
+          echo "PROJECT_ID=$PROJECT_ID" >> $GITHUB_ENV
+          echo "REGION=$REGION" >> $GITHUB_ENV
+          echo "APP=$APP" >> $GITHUB_ENV
+
+          for template in $(ls *.template.yaml); do
+            envsubst < ${template} > ${template%%.*}.yaml
+          done
+        working-directory: .github/google_cloud
+
+      - name: 'Check substituted clouddeploy.yaml'
+        run: cat clouddeploy.yaml
+        working-directory: .github/google_cloud
+
+      - name: 'Create Cloud Deploy delivery pipeline'
+        run: |-
+          gcloud deploy apply --file clouddeploy.yaml --region asia-northeast1
+        working-directory: .github/google_cloud
+        
+      - name: 'Verify delivery pipeline'
+        run: gcloud deploy delivery-pipelines list --region asia-northeast1
+        working-directory: .github/google_cloud
+
+      - name: 'Verify delivery pipeline'
+        run: gcloud deploy delivery-pipelines describe ${{ secrets.APP_LANGCHAIN }} --region asia-northeast1
+
+      - name: 'Create release name'
+        run: |-
+          echo "RELEASE_NAME=${{ secrets.APP_LANGCHAIN }}-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}" >> ${GITHUB_ENV}
+
+      - name: 'Create Cloud Deploy release'
+        id: 'release'
+        uses: 'google-github-actions/create-cloud-deploy-release@v0'
+        with:
+          delivery_pipeline: '${{ secrets.APP_LANGCHAIN }}'
+          name: '${{ env.RELEASE_NAME }}'
+          region: 'asia-northeast1'
+          description: '${{ env.GITHUB_COMMIT_MSG }}'
+          skaffold_file: '.github/google_cloud/skaffold.template.yaml'
+          images: 'app=asia-northeast1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.APP_LANGCHAIN }}/${{ secrets.APP_LANGCHAIN }}:${{ github.sha }}'
+
+      - name: 'Report Cloud Deploy release'
+        run: |-
+          echo "Created release ${{ steps.release.outputs.name }} "
+          echo "Release link ${{ steps.release.outputs.link }} "
+          RELEASE_URL="https://console.cloud.google.com/deploy/delivery-pipelines/asia-northeast1/${{ secrets.APP_LANGCHAIN }}/releases/${{ env.RELEASE_NAME }}?project=${{ secrets.PROJECT_ID }}"
+          echo "Release link: $RELEASE_URL"

@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Python
+.env
+.mypy_cache

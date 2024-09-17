@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "langchain-chat"
+version = "0.1.0"
+description = ""
+authors = ["github-actions <jojoto8845@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = "^1.38.0"
+langchain = "^0.2.14"
+google-cloud-aiplatform = "^1.64.0"
+langchain-google-vertexai = "^1.0.10"
+langchain-google-community = {extras = ["vertexaisearch"], version = "^1.0.8"}
+python-dotenv = "^1.0.1"
+pre-commit = "^3.8.0"
+detect-secrets = "^1.5.0"
+flask = "^3.0.3"
+requests = "^2.32.3"
+types-requests = "^2.32.0.20240914"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^7.1.1"
+black = "^24.8.0"
+isort = "^5.13.2"
+mypy = "^1.11.2"
+safety = "^3.2.7"
+bandit = "^1.7.9"
+vulture = "^2.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+postinstall = "scripts.setup:main"
