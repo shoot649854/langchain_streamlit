@@ -25,7 +25,7 @@ jobs:
       PASSING_UNIT_TEST_PYTHON_VERSIONS_BADGE_LABEL: 'passing unit tests Python versions'
     steps:
       - name: Check and Set Target Directory
-        uses: ./.github/actions/check_directory.yml
+        uses: ./.github/actions/check_directory
         with:
           directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'

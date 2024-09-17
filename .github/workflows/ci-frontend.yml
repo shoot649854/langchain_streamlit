@@ -14,7 +14,7 @@ jobs:
       NODE_20_VERSION: 20.12.2
     steps:
       - name: Check and Set Target Directory
-        uses: ./.github/actions/check_directory.yml
+        uses: ./.github/actions/check_directory
         with:
           directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
