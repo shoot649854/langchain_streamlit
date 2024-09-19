@@ -17,4 +17,4 @@ services:
         volumes:
             - ~/.gcp/credentials:/app/.gcp/credentials:ro
         ports:
-            - '8080:8080'
+            - '8501:8501'
