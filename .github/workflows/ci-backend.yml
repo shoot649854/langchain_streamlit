@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      TARGET_DIRECTORIES: '["backend", "langchain-chat", "advanced_search"]'
+      TARGET_DIRECTORIES: '["langchain-chat"]'
       FIRST_TARGET_DIRECTORY: 'langchain-chat'
       PYTHON_38_VERSION: 3.8.17
       PYTHON_39_VERSION: 3.9.12

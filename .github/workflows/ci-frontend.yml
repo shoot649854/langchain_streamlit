@@ -18,7 +18,7 @@ jobs:
       - name: Check and Set Target Directory
         uses: ./.github/actions/check_directory
         with:
-          directory: ${{ steps.SetGlobalConstants.outputs.FIRST_TARGET_DIRECTORY }}
+          directory: ${{ steps.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
 
   CreateCache:
