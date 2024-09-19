@@ -1,4 +1,5 @@
 .venv
+*.log
 
 # Personal Use
 /script/*.log
