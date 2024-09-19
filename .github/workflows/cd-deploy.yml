@@ -17,6 +17,15 @@ jobs:
       PYTHON_312_VERSION: 3.12.0
     steps:
       - run: echo 'Setting constants.'
+      - name: 'Set environment variables from GitHub Secrets'
+        run: |
+          echo "PROJECT_ID=${{ secrets.PROJECT_ID }}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=${{ secrets.IMAGE_NAME }}" >> $GITHUB_ENV
+          echo "REGION=${{ secrets.REGION }}" >> $GITHUB_ENV
+          echo "LOCATION=${{ secrets.LOCATION }}" >> $GITHUB_ENV
+          echo "STAGING_BUCKET=${{ secrets.STAGING_BUCKET }}" >> $GITHUB_ENV
+          echo "DATA_STORE_ID=${{ secrets.DATA_STORE_ID }}" >> $GITHUB_ENV
+          echo "LOCATION_ID=${{ secrets.LOCATION_ID }}" >> $GITHUB_ENV
 
   # https://github.com/google-github-actions/example-workflows/tree/main/workflows/create-cloud-deploy-release
   # App変更: secrets.App, .github/google_cloud/skaffold.template.yaml, .github/google_cloud/clouddeploy.template.yaml
@@ -103,5 +112,12 @@ jobs:
         run: |-
           echo "Created release ${{ steps.release.outputs.name }} "
           echo "Release link ${{ steps.release.outputs.link }} "
-          RELEASE_URL="https://console.cloud.google.com/deploy/delivery-pipelines/asia-northeast1/${{ secrets.APP_LANGCHAIN }}/releases/${{ env.RELEASE_NAME }}?project=${{ secrets.PROJECT_ID }}"
-          echo "Release link: $RELEASE_URL"
+          # Run gcloud command to list services and capture the URL for the staging service
+          SERVICE_URL=$(gcloud run services list --region=asia-northeast1 --platform=managed --format="value(URL)" --filter="SERVICE:langchain-stg")
+          
+          # Display the URL of the deployed service
+          if [ -n "$SERVICE_URL" ]; then
+            echo "Staging service URL: $SERVICE_URL"
+          else
+            echo "Service URL not found."
+          fi

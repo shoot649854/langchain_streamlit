@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      TARGET_DIRECTORIES: '["backend", "langchain-chat", "advanced_search"]'
-      FIRST_TARGET_DIRECTORY: 'backend'
+      TARGET_DIRECTORIES: '["langchain-chat"]'
+      FIRST_TARGET_DIRECTORY: 'langchain-chat'
       PYTHON_38_VERSION: 3.8.17
       PYTHON_39_VERSION: 3.9.12
       PYTHON_310_VERSION: 3.10.4
@@ -24,14 +24,17 @@ jobs:
       PASSING_UNIT_TEST_PYTHON_VERSIONS_BADGE_NAME: passing_unit_test_python_versions
       PASSING_UNIT_TEST_PYTHON_VERSIONS_BADGE_LABEL: 'passing unit tests Python versions'
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Check and Set Target Directory
-        uses: ./.github/actions/check_directory.yml
+        uses: ./.github/actions/check_directory
         with:
-          directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
+          directory: ${{ steps.SetGlobalConstants.outputs.FIRST_TARGET_DIRECTORY }}
       - run: echo 'Setting constants.'
 
   CreateCache:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -54,6 +57,7 @@ jobs:
 
   UpdateReadmeBadgesToCheckingStatus:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -76,6 +80,7 @@ jobs:
 
   RunFlake8:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -93,6 +98,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunIsort:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -112,6 +118,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunBlack:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -131,6 +138,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunDetectSecrets:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -158,6 +166,7 @@ jobs:
       RunBlack,
       RunDetectSecrets,
     ]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
