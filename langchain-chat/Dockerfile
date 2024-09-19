@@ -30,7 +30,7 @@ COPY --from=dependencies /usr/local/bin /usr/local/bin
 COPY . .
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 8501
 
 # Command to run the Streamlit app
-CMD ["python3", "-m", "streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+CMD ["python3", "-m", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

@@ -33,6 +33,7 @@ pyproject.toml
 # Docker-related files
 .dockerignore
 *Dockerfile*
+docker-compose.yml
 
 # Project specific files
 README.md

@@ -1,8 +1,9 @@
+# Personal Use
 .venv
 *.log
-
-# Personal Use
+credentials
 /script/*.log
+.gcp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

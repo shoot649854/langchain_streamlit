@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+    app:
+        image: ${IMAGE_NAME}
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            GOOGLE_APPLICATION_CREDENTIALS: /app/.gcp/credentials/credential
+            PROJECT_ID: ${PROJECT_ID}
+            REGION: ${REGION}
+            LOCATION: ${LOCATION}
+            STAGING_BUCKET: ${STAGING_BUCKET}
+            DATA_STORE_ID: ${DATA_STORE_ID}
+            LOCATION_ID: ${LOCATION_ID}
+        volumes:
+            - ~/.gcp/credentials:/app/.gcp/credentials:ro
+        ports:
+            - '8080:8080'
