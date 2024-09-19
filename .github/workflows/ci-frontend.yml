@@ -23,6 +23,7 @@ jobs:
 
   CreateCache:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -43,6 +44,7 @@ jobs:
 
   UpdateReadmeBadgesToCheckingStatus:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -65,6 +67,7 @@ jobs:
           
   RunTypeCheck:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -80,6 +83,7 @@ jobs:
         working-directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
   RunLint:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -95,6 +99,7 @@ jobs:
         working-directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
   RunFormat:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -110,6 +115,7 @@ jobs:
         working-directory: ${{ needs.SetGlobalConstants.outputs.TARGET_DIRECTORY }}
   RunKnip:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -133,6 +139,7 @@ jobs:
       RunFormat,
       RunKnip
       ]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -155,6 +162,7 @@ jobs:
       RunFormat,
       RunKnip
       ]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -181,6 +189,7 @@ jobs:
       RunTest,
       RunBuid
     ]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

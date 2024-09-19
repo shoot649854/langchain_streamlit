@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       TARGET_DIRECTORIES: '["backend", "langchain-chat", "advanced_search"]'
-      FIRST_TARGET_DIRECTORY: 'backend'
+      FIRST_TARGET_DIRECTORY: 'langchain-chat'
       PYTHON_38_VERSION: 3.8.17
       PYTHON_39_VERSION: 3.9.12
       PYTHON_310_VERSION: 3.10.4
@@ -34,6 +34,7 @@ jobs:
 
   CreateCache:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -56,6 +57,7 @@ jobs:
 
   UpdateReadmeBadgesToCheckingStatus:
     needs: SetGlobalConstants
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -78,6 +80,7 @@ jobs:
 
   RunFlake8:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -95,6 +98,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunIsort:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -114,6 +118,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunBlack:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -133,6 +138,7 @@ jobs:
         working-directory: ${{ matrix.target-directory }}
   RunDetectSecrets:
     needs: [CreateCache, SetGlobalConstants]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -160,6 +166,7 @@ jobs:
       RunBlack,
       RunDetectSecrets,
     ]
+    if: success()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
