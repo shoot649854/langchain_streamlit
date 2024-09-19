@@ -2,7 +2,7 @@
 
 # Define log variables
 LOG_DIR=./deploy
-LOG_FILE=$LOG_DIR/docker_logs.txt
+LOG_FILE=$LOG_DIR/docker.log
 
 # Create the log directory if it doesn't exist
 mkdir -p $LOG_DIR
