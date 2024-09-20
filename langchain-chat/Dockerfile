@@ -1,27 +1,36 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+# ---- Base Image ----
+FROM python:3.11-slim AS base
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
+# Copy requirements.txt first to leverage Docker cache
+COPY requirements.txt /app/
+
+# ---- Dependencies ----
+FROM base AS dependencies
+
+# Install system dependencies and Python dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     python3-dev \
     build-essential \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements.txt file and install dependencies
-COPY requirements.txt /app/
 RUN pip install --no-cache-dir --only=main -r requirements.txt
-# RUN pip3 install -r requirements.txt
 
-# Copy the rest of the application code into the container
+# ---- Final Image ----
+FROM base AS release
+
+# Copy installed dependencies from dependencies stage
+COPY --from=dependencies /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=dependencies /usr/local/bin /usr/local/bin
+
+# Copy the rest of the application code
 COPY . .
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 8501
 
 # Command to run the Streamlit app
-CMD ["python3", "-m", "streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+CMD ["python3", "-m", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

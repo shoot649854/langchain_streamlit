@@ -1,9 +1,6 @@
-# Personal Use
-.venv
-*.log
-credentials
-/script/*.log
-.gcp/
+.venv/
+
+# https://github.com/github/gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

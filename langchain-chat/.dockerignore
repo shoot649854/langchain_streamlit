@@ -1,11 +1,42 @@
-# Minimizing Docker image
+# Ignore specific files and directories
+.next
+node_modules
+npm-debug.log
+deploy/
+.pre-commit-config.yaml
+
+# Ignore Python cache files
 *.pyc
 *.pyo
 *.pyd
 __pycache__/
+
+# Ignore Pip directories
 .pip/
 build/
 dist/
 tests/
+.venv
+.mypy_cache/
+__pycache__/
+poetry.lock
+pyproject.toml
+
+# Ignore IDE/editor specific files
 .vscode/
+.DS_Store
+
+# Ignore Git files and directories
 .git/
+.gitignore
+
+# Docker-related files
+.dockerignore
+*Dockerfile*
+docker-compose.yml
+
+# Project specific files
+README.md
+.env
+.env.temp
+.venv/

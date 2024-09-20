@@ -6,10 +6,11 @@ import dotenv
 import vertexai
 from langchain.agents import Tool, initialize_agent
 from langchain.memory import ConversationBufferMemory
-from langchain.schema import AIMessage, HumanMessage
+from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_google_community import VertexAISearchRetriever
 from langchain_google_vertexai import ChatVertexAI
+from src import MODEL_NAME, MODEL_PATH
 from src.control.Markdown import read_markdown
 
 # from functools import lru_cache
@@ -30,20 +31,16 @@ vertexai.init(
     staging_bucket=STAGING_BUCKET,
 )
 
-# https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference
-MODEL_NAME = "gemini-1.5-flash-001"
-
 
 class VertexAIChat:
     def __init__(self) -> None:
         self.chat_model = ChatVertexAI()
-        self.initial_template = read_markdown(os.path.join(os.getcwd(), "src/model/prompt_initial.md"))
-        self.initial_prompt = PromptTemplate(
-            template=self.initial_template,
+        self.template = read_markdown(os.path.join(os.getcwd(), MODEL_PATH, "prompt_general.md"))
+        self.prompt = PromptTemplate(template=self.template, input_variables=["chat_history", "action_input"])
+        self.RAGPrompt = PromptTemplate(
+            template=read_markdown(os.path.join(os.getcwd(), MODEL_PATH, "RAG_Prompt.md")),
             input_variables=["chat_history", "action_input"],
         )
-        self.template = read_markdown(os.path.join(os.getcwd(), "src/model/prompt_general.md"))
-        self.prompt = PromptTemplate(template=self.template, input_variables=["chat_history", "action_input"])
         self.memory = ConversationBufferMemory(memory_key="chat_history")
 
     def search_immigration_database(self, query: str) -> Union[str, Tuple[str, List[Any]]]:
@@ -62,7 +59,6 @@ class VertexAIChat:
         try:
             documents = retriever.invoke(query)
             sources = [doc.metadata["source"] for doc in documents]
-            logger.info("\n\nここですよ\n\n")
             return str(documents), sources
         except Exception as e:
             return f"Failed to retrieve data: {str(e)}"
@@ -74,7 +70,7 @@ class VertexAIChat:
             Tool(
                 name="search_immigration_database",
                 func=self.search_immigration_database,
-                description="This tool provides visas and immigration information. ",
+                description="This tool provides visas and immigration information.",
             )
         ]
         try:
@@ -91,20 +87,21 @@ class VertexAIChat:
             agent_type="zero-shot-react-description",
         )
 
+    def get_prompt(self) -> str:
+        return self.template
+
     def get_response(self, messages) -> str:
         chat_model = ChatVertexAI(project=PROJECT_ID, model=MODEL_NAME)
-        return chat_model.predict_messages(messages)
-
-    def get_RAG_response(self, messages, response_search_immigration: str) -> str:
-        chat_model = ChatVertexAI(project=PROJECT_ID, model=MODEL_NAME)
-        messages.append(AIMessage(response_search_immigration))
         return chat_model.predict_messages(messages)
 
     def _update_memory(self, msg_input: str, response: str) -> None:
         self.memory.save_context({"input": msg_input}, {"output": response})
 
-    def get_HumanMessageContent(self, message):
+    def SystemMessageContent(self, message):
+        return SystemMessage(content=message["content"])
+
+    def HumanMessageContent(self, message):
         return HumanMessage(content=message["content"])
 
-    def get_AIMessageContent(self, message):
+    def AIMessageContent(self, message):
         return AIMessage(content=message["content"])
