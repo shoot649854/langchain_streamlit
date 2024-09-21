@@ -12,6 +12,7 @@ def main():
     # )
 
     get_user("jdoe")
+    get_user("jdoeee")
 
     # Example: Listing all users
     get_all_users()

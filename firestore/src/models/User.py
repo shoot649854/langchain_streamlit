@@ -42,7 +42,7 @@ class User:
                 citizenship=data.get("citizenship"),
             )
         else:
-            logger.info("No such document!")
+            logger.warning("No such document!")
             return None
 
     @classmethod
@@ -73,4 +73,4 @@ class User:
             user_ref.delete()
             logger.info(f"User with ID {user_id} has been deleted from Firestore.")
         else:
-            logger.info(f"User with ID {user_id} does not exist.")
+            logger.warning(f"User with ID {user_id} does not exist.")
