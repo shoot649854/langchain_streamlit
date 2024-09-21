@@ -1,7 +1,7 @@
 from src.models.User import User
 
 
-def add_user_controller(user_id, first_name, last_name, date_of_birth, place_of_birth, citizenship):
+def add_user(user_id, first_name, last_name, date_of_birth, place_of_birth, citizenship):
     """Handles the logic to create and save a new user."""
     user = User(
         user_id=user_id,
@@ -15,13 +15,17 @@ def add_user_controller(user_id, first_name, last_name, date_of_birth, place_of_
     return user
 
 
-def get_user_controller(user_id):
+def get_user(user_id):
     """Handles the logic to retrieve a specific user."""
-    user = User.get(user_id)
-    return user
+    return User.get_single(user_id)
 
 
-def list_all_users_controller():
+def get_all_users():
     """Handles the logic to retrieve all users."""
-    users = User.list_all()
-    return users
+    return User.get_all()
+
+
+def delete_user(user_id):
+    """Handles the logic to delete a specific user."""
+    User.delete(user_id)
+    return f"User {user_id} deleted."

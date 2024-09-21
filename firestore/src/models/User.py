@@ -1,9 +1,5 @@
-import logging
-
 from src import db
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from src.Logging.Logging import logger
 
 
 class User:
@@ -29,7 +25,7 @@ class User:
         logger.info(f"User {self.first_name} {self.last_name} added to Firestore.")
 
     @classmethod
-    def get(cls, user_id):
+    def get_single(cls, user_id):
         """Retrieves a user from Firestore by user_id."""
         user_ref = db.collection("users").document(user_id)
         doc = user_ref.get()
@@ -50,7 +46,7 @@ class User:
             return None
 
     @classmethod
-    def list_all(cls):
+    def get_all(cls):
         """Retrieves all users from Firestore."""
         users_ref = db.collection("users")
         docs = users_ref.stream()
@@ -68,3 +64,13 @@ class User:
             users.append(user)
             logger.info(f"{doc.id} => {data}")
         return users
+
+    @classmethod
+    def delete_single(cls, user_id):
+        """Deletes a user from Firestore by user_id."""
+        user_ref = db.collection("users").document(user_id)
+        if user_ref.get().exists:
+            user_ref.delete()
+            logger.info(f"User with ID {user_id} has been deleted from Firestore.")
+        else:
+            logger.info(f"User with ID {user_id} does not exist.")
