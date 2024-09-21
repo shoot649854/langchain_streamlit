@@ -13,13 +13,13 @@ google-cloud-aiplatform = "^1.64.0"
 langchain-google-vertexai = "^1.0.10"
 langchain-google-community = {extras = ["vertexaisearch"], version = "^1.0.8"}
 python-dotenv = "^1.0.1"
-pre-commit = "^3.8.0"
 detect-secrets = "^1.5.0"
 flask = "^3.0.3"
 requests = "^2.32.3"
 types-requests = "^2.32.0.20240914"
 
 [tool.poetry.dev-dependencies]
+pre-commit = "^3.8.0"
 flake8 = "^7.1.1"
 black = "^24.8.0"
 isort = "^5.13.2"
