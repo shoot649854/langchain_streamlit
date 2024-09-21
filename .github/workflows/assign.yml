@@ -1,4 +1,4 @@
-name: Assign Label
+name: Assign 
 
 on:
   pull_request:
