@@ -1,4 +1,4 @@
-from src import db
+from src import db  # type: ignore
 from src.Logging.Logging import logger
 
 
