@@ -1,4 +1,4 @@
-from src.Controllers.Controllers import (
+from src.controllers.Controllers import (
     create_user,
     get_all_users,
     get_user,
