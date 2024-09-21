@@ -1,4 +1,3 @@
-import logging
 import os
 
 import dotenv
@@ -6,8 +5,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 dotenv.load_dotenv()
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
 
 credential_path = os.getenv("CREDENTIAL_PATH")
 if not credential_path:
