@@ -11,7 +11,7 @@ class User:
         self.place_of_birth = place_of_birth
         self.citizenship = citizenship
 
-    def save(self):
+    def create(self):
         """Saves the user instance to Firestore."""
         user_ref = db.collection("users").document(self.user_id)
         user_data = {
@@ -23,6 +23,17 @@ class User:
         }
         user_ref.set(user_data)
         logger.info(f"User {self.first_name} {self.last_name} added to Firestore.")
+
+    def update(self, **kwargs):
+        """Updates specific fields of a user in Firestore."""
+        user_ref = db.collection("users").document(self.user_id)
+        updated_fields = {key: value for key, value in kwargs.items() if value is not None}
+
+        if updated_fields:
+            user_ref.update(updated_fields)
+            logger.info(f"User {self.user_id} updated with fields: {updated_fields}.")
+        else:
+            logger.warning(f"No valid fields provided to update for user {self.user_id}.")
 
     @classmethod
     def get_single(cls, user_id):

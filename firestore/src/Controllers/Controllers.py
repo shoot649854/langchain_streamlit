@@ -1,7 +1,7 @@
 from src.models.User import User
 
 
-def add_user(user_id, first_name, last_name, date_of_birth, place_of_birth, citizenship):
+def create_user(user_id, first_name, last_name, date_of_birth, place_of_birth, citizenship):
     """Handles the logic to create and save a new user."""
     user = User(
         user_id=user_id,
@@ -11,7 +11,7 @@ def add_user(user_id, first_name, last_name, date_of_birth, place_of_birth, citi
         place_of_birth=place_of_birth,
         citizenship=citizenship,
     )
-    user.save()
+    user.create()
     return user
 
 
@@ -23,6 +23,17 @@ def get_user(user_id):
 def get_all_users():
     """Handles the logic to retrieve all users."""
     return User.get_all()
+
+
+def update_user(user_id, **kwargs):
+    """Handles the logic to update specific fields of a user."""
+    user = User.get_single(user_id)
+
+    if not user:
+        return f"User with ID {user_id} does not exist."
+
+    user.update(**kwargs)
+    return f"User {user_id} updated."
 
 
 def delete_user(user_id):
