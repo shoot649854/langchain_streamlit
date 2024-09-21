@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, dev/main]
     paths:
-      - .github/labels.json
+      - .github/labels/labels.json
 
 jobs:
   sync-labels:

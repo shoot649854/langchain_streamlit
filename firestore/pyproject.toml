@@ -9,7 +9,17 @@ readme = "README.md"
 python = "^3.12"
 firebase-admin = "^6.5.0"
 python-dotenv = "^1.0.1"
+colorlog = "^6.8.2"
 
+[tool.poetry.dev-dependencies]
+pre-commit = "^3.8.0"
+flake8 = "^7.1.1"
+black = "^24.8.0"
+isort = "^5.13.2"
+mypy = "^1.11.2"
+safety = "^3.2.7"
+bandit = "^1.7.9"
+vulture = "^2.11"
 
 [build-system]
 requires = ["poetry-core"]
