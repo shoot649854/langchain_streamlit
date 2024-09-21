@@ -1,8 +1,7 @@
-import datetime
-import os
 from logging import ERROR, INFO, FileHandler, Formatter, StreamHandler, getLogger
 
 import colorlog
+from config import LOG_FILE_PATH
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
@@ -23,10 +22,8 @@ stream_format = colorlog.ColoredFormatter(
 stream.setFormatter(stream_format)
 logger.addHandler(stream)
 
-log_file_name = f"log/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
-os.makedirs(os.path.dirname(log_file_name), exist_ok=True)
 
-file = FileHandler(log_file_name)
+file = FileHandler(LOG_FILE_PATH)
 file.setLevel(ERROR)
 file_formatter = Formatter("%(asctime)s - %(levelname)s - %(filename)s - %(name)s - %(funcName)s - %(message)s")
 file.setFormatter(file_formatter)
