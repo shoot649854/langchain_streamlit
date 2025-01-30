@@ -1,10 +1,30 @@
-name: Sync Branch Protection Rules
+name: Sync
 
 on:
   push:
-    branches: [dev/main]
+    branches: [main, dev/main]
+    paths:
+      - .github/labels
+      - .github/rules
+  schedule:
+    - cron: '0 0 * * 0'
 
 jobs:
+  sync-labels:
+    permissions:
+      issues: write
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - name: Install dependencies
+        run: yarn add -D @azu/github-label-setup
+      - name: Run github-label-setup
+        run: yarn github-label-setup --token ${{ secrets.GITHUB_TOKEN }} --labels .github/labels/labels.json
+  
   set-branch-protection:
   # https://docs.github.com/en/rest/branches/branch-protection?apiVersion=2022-11-28
     runs-on: ubuntu-latest

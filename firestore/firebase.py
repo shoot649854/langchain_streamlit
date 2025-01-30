@@ -1,4 +1,5 @@
-from src.Controllers.Controllers import (  # create_user,
+from src.controllers.Controllers import (
+    create_user,
     get_all_users,
     get_user,
     update_user,
@@ -6,14 +7,14 @@ from src.Controllers.Controllers import (  # create_user,
 
 
 def main():
-    # create_user(
-    #     user_id="jdoe",
-    #     first_name="John",
-    #     last_name="Doe",
-    #     date_of_birth="1990-01-01",
-    #     place_of_birth="New York",
-    #     citizenship="USA",
-    # )
+    create_user(
+        user_id="jdoe",
+        first_name="John",
+        last_name="Doe",
+        date_of_birth="1990-01-01",
+        place_of_birth="New York",
+        citizenship="USA",
+    )
 
     get_user("jdoe")
     get_user("jdoeee")
